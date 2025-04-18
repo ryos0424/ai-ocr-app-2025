@@ -9,6 +9,7 @@ __pycache__
 .cdk.staging
 cdk.out
 env.json
+README_cdk.md
 
 # layer 内のビルド済みパッケージは無視
 /layer/python/
