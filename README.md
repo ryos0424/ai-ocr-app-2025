@@ -1,5 +1,6 @@
 # ai-ocr-app-2025
-ai-ocr-app-2025
+Facebookに投稿した画像の最新一枚を5分ごとに取得、
+OPENAI_APIでOCR処理し、iphoneにメールする。
 
 # env.jsonに必要な変数
 "account": 
