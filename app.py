@@ -1,28 +1,33 @@
 #!/usr/bin/env python3
 import os
+import json
 
 import aws_cdk as cdk
+from ai_ocr_app_2025.ai_ocr_app_2025_stack import FacebookImageStack
 
-from ai_ocr_app_2025.ai_ocr_app_2025_stack import AiOcrApp2025Stack
-
+# ── プロジェクトルートにある env.json を参照 ────────────────────────────
+config_path = os.path.join(os.path.dirname(__file__), "env.json")
+try:
+    with open(config_path, "r", encoding="utf-8") as f:
+        cfg = json.load(f)
+    account         = cfg["account"]
+    region          = cfg["region"]
+    fb_access_token = cfg["FB_ACCESS_TOKEN"]
+    openai_api_key  = cfg["OPENAI_API_KEY"]
+    recipient_email = cfg["RECIPIENT_EMAIL"]
+except Exception as e:
+    raise Exception(f"env.json の読み込みに失敗しました: {e}")
+# ──────────────────────────────────────────────────────────────────────────
 
 app = cdk.App()
-AiOcrApp2025Stack(app, "AiOcrApp2025Stack",
-    # If you don't specify 'env', this stack will be environment-agnostic.
-    # Account/Region-dependent features and context lookups will not work,
-    # but a single synthesized template can be deployed anywhere.
-
-    # Uncomment the next line to specialize this stack for the AWS Account
-    # and Region that are implied by the current CLI configuration.
-
-    #env=cdk.Environment(account=os.getenv('CDK_DEFAULT_ACCOUNT'), region=os.getenv('CDK_DEFAULT_REGION')),
-
-    # Uncomment the next line if you know exactly what Account and Region you
-    # want to deploy the stack to. */
-
-    #env=cdk.Environment(account='123456789012', region='us-east-1'),
-
-    # For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html
-    )
-
+FacebookImageStack(
+    app,
+    "FacebookImageStack",
+    # FacebookImageStack 側で受け取るパラメータ
+    fb_access_token=fb_access_token,
+    openai_api_key=openai_api_key,
+    recipient_email = recipient_email,
+    env=cdk.Environment(account=account, region=region),
+    # ▼ 環境非依存スタックにしたい場合は上記 env=... をコメントアウト
+)
 app.synth()
